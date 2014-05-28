@@ -11,6 +11,8 @@ namespace dependent_type
 	{
 		template < unsigned long long int M >
 		friend class int_ ;
+		template < unsigned long long M >
+		friend auto create_int ( ) -> int_ < M > ;
 		unsigned long long int value_ ;
 	public :
 		constexpr int_ ( ) = default ;
@@ -37,9 +39,9 @@ namespace dependent_type
 			return ret ;
 		}
 		template < unsigned long long int M >
-		auto operator - ( int_ < M > m ) const -> int_ < N - M >
+		auto operator - ( int_ < M > m ) const -> int_ < N >
 		{
-			int_ < N - M > ret ;
+			int_ < N > ret ;
 			ret.value_ = value_ - m.value_ ;
 			return ret ;
 		}
@@ -51,29 +53,31 @@ namespace dependent_type
 			return ret ;
 		}
 		template < unsigned long long int M >
-		auto operator / ( int_ < M > m ) const -> int_ < N / M >
+		auto operator / ( int_ < M > m ) const -> int_ < N >
 		{
-			int_ < N / M > ret ;
+			int_ < N > ret ;
 			ret.value_ = value_ / m.value_ ;
 			return ret ;
 		}
 		template < unsigned long long int M , typename = typename std::enable_if < ( N >= M ) >::type >
-		auto operator % ( int_ < M > m ) const-> int_ < M - 1 >
+		auto operator % ( int_ < M > m ) const-> int_ < ( ( N >= M ) ? M - 1 : N ) >
 		{
-			int_ < M - 1 > ret ;
+			int_ < ( ( N >= M ) ? M - 1 : N ) > ret ;
 			ret.value_ = value_ % m.value_ ;
 			return ret ;
-		}
-		template < unsigned long long int M , typename = typename std::enable_if < ( N < M ) >::type >
-		auto operator % ( int_ < M > m ) const-> int_ < N >
-		{
-			return * this ;
 		}
 		auto get ( ) const -> unsigned long long int
 		{
 			return value_ ;
 		}
 	} ;
+	template < unsigned long long N >
+	auto create_int ( ) -> int_ < N >
+	{
+		int_ < N > ret ;
+		ret.value_ = N ;
+		return ret ;
+	}
 	template < typename T >
 	auto make_int ( T value ) -> int_ < std::numeric_limits < T >::max ( ) >
 	{

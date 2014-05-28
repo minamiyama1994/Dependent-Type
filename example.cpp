@@ -14,4 +14,5 @@ auto main ( ) -> int
 	std::cout << ( ulonglong_ / ulong_ ).get ( ) << std::endl ;
 	std::cout << ( ulonglong_ / uint_ ).get ( ) << std::endl ;
 	std::cout << ( ulonglong_ / ushort_ ).get ( ) << std::endl ;
+	std::cout << dependent_type::create_int < 1 > ( ).get ( ) << std::endl ;
 }
