@@ -1,11 +1,12 @@
 #include<iostream>
-#include"dependent_type/dependent_type.hpp"
+#include"dependent_type/int.hpp"
 auto main ( ) -> int
 {
-	auto ulonglong_ = dependent_type::make_int ( std::numeric_limits < unsigned long long int >::max ( ) ) ;
-	auto ulong_ = dependent_type::make_int ( std::numeric_limits < unsigned long int >::max ( ) ) ;
-	auto uint_ = dependent_type::make_int ( std::numeric_limits < unsigned int >::max ( ) ) ;
-	auto ushort_ = dependent_type::make_int ( std::numeric_limits < unsigned short int >::max ( ) ) ;
+	constexpr auto ulonglong_ = dependent_type::make_int ( std::numeric_limits < unsigned long long int >::max ( ) ) ;
+	constexpr auto ulong_ = dependent_type::make_int ( std::numeric_limits < unsigned long int >::max ( ) ) ;
+	constexpr auto uint_ = dependent_type::make_int ( std::numeric_limits < unsigned int >::max ( ) ) ;
+	constexpr auto ushort_ = dependent_type::make_int ( std::numeric_limits < unsigned short int >::max ( ) ) ;
+	// dependent_type::int < 1 > u1 = ulonglong_ ; // Compile Error!
 	std::cout << ulonglong_.get ( ) << std::endl ;
 	std::cout << ulong_.get ( ) << std::endl ;
 	std::cout << uint_.get ( ) << std::endl ;

@@ -1,5 +1,5 @@
-#ifndef DEPENDENT_TYPE_HPP
-#define DEPENDENT_TYPE_HPP
+#ifndef DEPENDENT_TYPE_INT_HPP
+#define DEPENDENT_TYPE_INT_HPP
 #include<limits>
 #include<type_traits>
 namespace dependent_type
@@ -9,11 +9,19 @@ namespace dependent_type
 	template < unsigned long long int N >
 	class int_
 	{
+		struct value_holder
+		{
+			unsigned long long int value ;
+		} ;
 		template < unsigned long long int M >
 		friend class int_ ;
 		template < unsigned long long M >
-		friend auto create_int ( ) -> int_ < M > ;
+		friend constexpr auto create_int ( ) -> int_ < M > ;
 		unsigned long long int value_ ;
+		constexpr int_ ( const value_holder & v )
+			: value_ { v.value }
+		{
+		}
 	public :
 		constexpr int_ ( ) = default ;
 		constexpr int_ ( const int_ & ) = default ;
@@ -32,56 +40,44 @@ namespace dependent_type
 			static_assert ( N >= std::numeric_limits < T >::max ( ) , "" ) ;
 		}
 		template < unsigned long long int M >
-		auto operator + ( int_ < M > m ) const -> int_ < N + M >
+		constexpr auto operator + ( int_ < M > m ) const -> int_ < N + M >
 		{
-			int_ < N + M > ret ;
-			ret.value_ = value_ + m.value_ ;
-			return ret ;
+			return int_ < N + M > { value_holder { value_ + m.value_ } } ;
 		}
 		template < unsigned long long int M >
-		auto operator - ( int_ < M > m ) const -> int_ < N >
+		constexpr auto operator - ( int_ < M > m ) const -> int_ < N >
 		{
-			int_ < N > ret ;
-			ret.value_ = value_ - m.value_ ;
-			return ret ;
+			return int_ < N > { value_holder { value_ - m.value_ } } ;
 		}
 		template < unsigned long long int M >
-		auto operator * ( int_ < M > m ) const -> int_ < N * M >
+		constexpr auto operator * ( int_ < M > m ) const -> int_ < N * M >
 		{
-			int_ < N * M > ret ;
-			ret.value_ = value_ * m.value_ ;
-			return ret ;
+			return int_ < N * M > { value_holder { value_ * m.value_ } } ;
 		}
 		template < unsigned long long int M >
-		auto operator / ( int_ < M > m ) const -> int_ < N >
+		constexpr auto operator / ( int_ < M > m ) const -> int_ < N >
 		{
-			int_ < N > ret ;
-			ret.value_ = value_ / m.value_ ;
-			return ret ;
+			return int_ < N > { value_holder { value_ / m.value_ } } ;
 		}
 		template < unsigned long long int M , typename = typename std::enable_if < ( N >= M ) >::type >
-		auto operator % ( int_ < M > m ) const-> int_ < ( ( N >= M ) ? M - 1 : N ) >
+		constexpr auto operator % ( int_ < M > m ) const-> int_ < ( ( N >= M ) ? M - 1 : N ) >
 		{
-			int_ < ( ( N >= M ) ? M - 1 : N ) > ret ;
-			ret.value_ = value_ % m.value_ ;
-			return ret ;
+			return int_ < ( ( N >= M ) ? M - 1 : N ) > { value_holder { value_ % m.value_ } } ;
 		}
-		auto get ( ) const -> unsigned long long int
+		constexpr auto get ( ) const -> unsigned long long int
 		{
 			return value_ ;
 		}
 	} ;
-	template < unsigned long long N >
-	auto create_int ( ) -> int_ < N >
-	{
-		int_ < N > ret ;
-		ret.value_ = N ;
-		return ret ;
-	}
 	template < typename T >
-	auto make_int ( T value ) -> int_ < std::numeric_limits < T >::max ( ) >
+	constexpr auto make_int ( T value ) -> int_ < std::numeric_limits < T >::max ( ) >
 	{
 		return int_ < std::numeric_limits < T >::max ( ) > { value } ;
+	}
+	template < unsigned long long N >
+	constexpr auto create_int ( ) -> int_ < N >
+	{
+		return int_ < N > { typename int_ < N >::value_holder { N } } ;
 	}
 }
 #endif
