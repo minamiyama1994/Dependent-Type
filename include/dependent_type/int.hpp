@@ -6,13 +6,13 @@ namespace dependent_type
 {
 	template < unsigned long long int >
 	class int_ ;
+	struct value_holder
+	{
+		unsigned long long int value ;
+	} ;
 	template < unsigned long long int N >
 	class int_
 	{
-		struct value_holder
-		{
-			unsigned long long int value ;
-		} ;
 		template < unsigned long long int M >
 		friend class int_ ;
 		template < unsigned long long M >
@@ -68,6 +68,16 @@ namespace dependent_type
 		{
 			return value_ ;
 		}
+		template < unsigned long long int M >
+		constexpr auto inc ( ) const -> int_ < N + M >
+		{
+			return int_ < N + M > { value_holder { value_ + M } } ;
+		}
+		template < unsigned long long int M >
+		constexpr auto dec ( ) const -> int_ < N - M >
+		{
+			return int_ < N - M > { value_holder { value_ - M } } ;
+		}
 	} ;
 	template < typename T >
 	constexpr auto make_int ( T value ) -> int_ < std::numeric_limits < T >::max ( ) >
@@ -77,7 +87,7 @@ namespace dependent_type
 	template < unsigned long long N >
 	constexpr auto create_int ( ) -> int_ < N >
 	{
-		return int_ < N > { typename int_ < N >::value_holder { N } } ;
+		return int_ < N > { value_holder { N } } ;
 	}
 }
 #endif

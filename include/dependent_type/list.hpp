@@ -5,8 +5,34 @@ namespace dependent_type
 {
 	template < typename , unsigned long long int >
 	class list ;
+	template < typename >
+	class list_base ;
+	template < typename T , unsigned long long int N >
+	class list_base < list < T , N > >
+	{
+	public :
+		template < unsigned long long int M >
+		constexpr auto at ( int_ < M > index , typename std::enable_if < ( M <= N - 1 ) >::type * = nullptr ) const -> const T &
+		{
+			return index.get ( ) ? static_cast < const list < T , N > & > ( * this ).tail ( ).at ( index.template dec < 1 > ( ) ) : static_cast < const list < T , N > & > ( * this ).head ( ) ;
+		}
+		constexpr auto at ( int_ < 0 > ) const -> const T &
+		{
+			return static_cast < const list < T , N > & > ( * this ).head ( ) ;
+		}
+	} ;
+	template < typename T >
+	class list_base < list < T , 1 > >
+	{
+	public :
+		constexpr auto at ( int_ < 0 > ) const -> const T &
+		{
+			return static_cast < const list < T , 1 > & > ( * this ).head ( ) ;
+		}
+	} ;
 	template < typename T , unsigned long long N >
 	class list
+		: public list_base < list < T , N > >
 	{
 		T head_ ;
 		list < T , N - 1 > tail_ ;
@@ -35,15 +61,6 @@ namespace dependent_type
 		constexpr auto tail ( ) const -> const list < T , N - 1 > &
 		{
 			return tail_ ;
-		}
-		// TODO : fix bug then N == 1
-		constexpr auto at ( int_ < N - 1 > index ) const -> const T &
-		{
-			return index.get ( ) ? tail_.at ( index - create_int < 1 > ( ) ) : head_ ;
-		}
-		constexpr auto at ( int_ < 0 > index ) const -> const T &
-		{
-			return head_ ;
 		}
 	} ;
 	template < typename T >
