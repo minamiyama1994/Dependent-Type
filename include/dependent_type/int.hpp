@@ -40,19 +40,19 @@ namespace dependent_type
 			static_assert ( N >= std::numeric_limits < T >::max ( ) , "" ) ;
 		}
 		template < unsigned long long int M >
-		constexpr auto operator + ( int_ < M > m ) const -> int_ < N + M >
+		constexpr auto operator + ( int_ < M > m ) const -> int_ < std::numeric_limits < unsigned long long int >::max ( ) - N >= M ? N + M : std::numeric_limits < unsigned long long int >::max ( ) >
 		{
-			return int_ < N + M > { value_holder { value_ + m.value_ } } ;
+			return int_ < std::numeric_limits < unsigned long long int >::max ( ) - N >= M ? N + M : std::numeric_limits < unsigned long long int >::max ( ) > { value_holder { value_ + m.value_ } } ;
 		}
 		template < unsigned long long int M >
-		constexpr auto operator - ( int_ < M > m ) const -> int_ < N >
+		constexpr auto operator - ( int_ < M > m ) const -> int_ < M == 0 ? N : std::numeric_limits < unsigned long long int >::max ( ) >
 		{
-			return int_ < N > { value_holder { value_ - m.value_ } } ;
+			return int_ < M == 0 ? N : std::numeric_limits < unsigned long long int >::max ( ) > { value_holder { value_ - m.value_ } } ;
 		}
 		template < unsigned long long int M >
-		constexpr auto operator * ( int_ < M > m ) const -> int_ < N * M >
+		constexpr auto operator * ( int_ < M > m ) const -> int_ < std::numeric_limits < unsigned long long int >::max ( ) / N >= M ? N * M : std::numeric_limits < unsigned long long int >::max ( ) >
 		{
-			return int_ < N * M > { value_holder { value_ * m.value_ } } ;
+			return int_ < std::numeric_limits < unsigned long long int >::max ( ) / N >= M ? N * M : std::numeric_limits < unsigned long long int >::max ( ) > { value_holder { value_ * m.value_ } } ;
 		}
 		template < unsigned long long int M >
 		constexpr auto operator / ( int_ < M > m ) const -> int_ < N >
@@ -69,14 +69,14 @@ namespace dependent_type
 			return value_ ;
 		}
 		template < unsigned long long int M >
-		constexpr auto inc ( ) const -> int_ < N + M >
+		constexpr auto inc ( ) const -> int_ < std::numeric_limits < unsigned long long int >::max ( ) - N >= M ? N + M : std::numeric_limits < unsigned long long int >::max ( ) >
 		{
-			return int_ < N + M > { value_holder { value_ + M } } ;
+			return int_ < std::numeric_limits < unsigned long long int >::max ( ) - N >= M ? N + M : std::numeric_limits < unsigned long long int >::max ( ) > { value_holder { value_ + M } } ;
 		}
 		template < unsigned long long int M >
-		constexpr auto dec ( ) const -> int_ < N - M >
+		constexpr auto dec ( ) const -> int_ < M == 0 ? N : std::numeric_limits < unsigned long long int >::max ( ) >
 		{
-			return int_ < N - M > { value_holder { value_ - M } } ;
+			return int_ < M == 0 ? N : std::numeric_limits < unsigned long long int >::max ( ) > { value_holder { value_ - M } } ;
 		}
 	} ;
 	template < typename T >
